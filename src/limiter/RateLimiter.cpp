@@ -6,7 +6,7 @@ void RateLimiter::wait()
     auto now     = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - m_lastTime).count();
 
-    // ¼ÆËã×îĞ¡¼ä¸ôÊ±¼ä(Î¢Ãë)
+    // è®¡ç®—æœ€å°é—´éš”æ—¶é—´(å¾®ç§’)
     int64_t min_interval = 1200000 / m_qps;
 
     if (elapsed < min_interval)

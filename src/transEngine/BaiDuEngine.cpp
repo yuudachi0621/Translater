@@ -1,6 +1,6 @@
 #include "BaiDuEngine.h"
 #include "EncryptMD5.h"
-#include "RequstAPI.h"
+#include "RequestAPI.h"
 #include "json.hpp"
 #include "URLEncode.h"
 #include "File.h"
@@ -22,7 +22,7 @@ BaiDuEngine::BaiDuEngine()
 
 std::string BaiDuEngine::TranslateText(const std::string& text)
 {
-    std::vector<std::tuple<std::string, std::string>> transResults = ToRequst(GetRequst(text));
+    std::vector<std::tuple<std::string, std::string>> transResults = ToRequest(GetRequest(text));
     if (transResults.empty())
         return std::string();
 
@@ -35,7 +35,7 @@ std::vector<std::string> BaiDuEngine::TranslateBatch(const std::vector<std::stri
 {
     std::vector<std::string> result(texts.size());
 
-    // ËÙÂÊÏŞÖÆÆ÷ - Ã¿Ãëm_qpsMax¸öÇëÇó
+    // é€Ÿç‡é™åˆ¶å™¨ - æ¯ç§’m_qpsMaxä¸ªè¯·æ±‚
     RateLimiter limiter(m_qpsMax);
     ThreadPool pool(4);
     std::mutex resultMutex;
@@ -46,9 +46,9 @@ std::vector<std::string> BaiDuEngine::TranslateBatch(const std::vector<std::stri
     for (auto& req : reqTexts)
     {
         auto func = [&]() {
-            limiter.wait(); // µÈ´ı»ñÈ¡ÇëÇóĞí¿É
+            limiter.wait(); // ç­‰å¾…è·å–è¯·æ±‚è®¸å¯
 
-            std::vector<std::tuple<std::string, std::string>> res = ToRequst(GetRequst(req.lines));
+            std::vector<std::tuple<std::string, std::string>> res = ToRequest(GetRequest(req.lines));
             if (res.empty()) return;
 
             std::lock_guard<std::mutex> lock(resultMutex);
@@ -69,16 +69,22 @@ std::vector<std::string> BaiDuEngine::TranslateBatch(const std::vector<std::stri
 
 void BaiDuEngine::LoadDataFile()
 {
-    std::string config       = File::ReadFile("config.txt");
+    std::string config       = File::ReadJsonConfig("config.txt");
     nlohmann::json json_obj  = nlohmann::json::parse(config);
     nlohmann::json baidu_obj = json_obj["engine"]["BaiDu"];
 
     m_from = json_obj["from"];
     m_to   = json_obj["to"];
 
-    m_requstURL = baidu_obj["requstURL"];
-    m_apiKey    = baidu_obj["apiKey"];
-    m_appId     = baidu_obj["appId"];
+    if (baidu_obj.find("requestURL") != baidu_obj.end())
+        m_requestURL = baidu_obj["requestURL"];
+    else
+    {
+        // Compatibility with older config files.
+        m_requestURL = baidu_obj["requstURL"];
+    }
+    m_apiKey = baidu_obj["apiKey"];
+    m_appId  = baidu_obj["appId"];
 
     std::string qps = baidu_obj["qps"];
     if (qps.empty())
@@ -125,16 +131,16 @@ std::vector<TextBlock> BaiDuEngine::GetTextGroup(const std::vector<std::string>&
     return result;
 }
 
-std::string BaiDuEngine::GetRequst(const std::string& str)
+std::string BaiDuEngine::GetRequest(const std::string& str)
 {
-    std::random_device rd;                          // ÓÃÓÚ»ñÈ¡Ëæ»úÊıÖÖ×Ó
-    std::mt19937 gen(rd());                         // Ê¹ÓÃËæ»úÊıÖÖ×Ó³õÊ¼»¯Mersenne TwisterÉú³ÉÆ÷
-    std::uniform_int_distribution<> dis(1, 100000); // ¶¨ÒåÒ»¸öÔÚ1µ½100Ö®¼ä¾ùÔÈ·Ö²¼µÄÕûÊıÉú³ÉÆ÷
-    int random_number = dis(gen);                   // Éú³ÉËæ»úÊı
+    std::random_device rd;                          // ç”¨äºè·å–éšæœºæ•°ç§å­
+    std::mt19937 gen(rd());                         // ä½¿ç”¨éšæœºæ•°ç§å­åˆå§‹åŒ–Mersenne Twisterç”Ÿæˆå™¨
+    std::uniform_int_distribution<> dis(1, 100000); // å®šä¹‰ä¸€ä¸ªåœ¨1åˆ°100ä¹‹é—´å‡åŒ€åˆ†å¸ƒçš„æ•´æ•°ç”Ÿæˆå™¨
+    int random_number = dis(gen);                   // ç”Ÿæˆéšæœºæ•°
 
-    std::string salt = std::to_string(random_number); // Ëæ»úÊı
+    std::string salt = std::to_string(random_number); // éšæœºæ•°
     std::string sign = EncryptString(m_appId + str + salt + m_apiKey);
-    std::string url  = m_requstURL;
+    std::string url  = m_requestURL;
     url += "?q=" + URLEncode::encode(str);
     url += "&from=" + m_from;
     url += "&to=" + m_to;
@@ -144,21 +150,21 @@ std::string BaiDuEngine::GetRequst(const std::string& str)
     return url;
 }
 
-std::string BaiDuEngine::GetRequst(const std::vector<std::string>& texts)
+std::string BaiDuEngine::GetRequest(const std::vector<std::string>& texts)
 {
-    std::string requstStr;
+    std::string requestStr;
     for (auto& text : texts)
     {
-        requstStr += text + u8"\n";
+        requestStr += text + u8"\n";
     }
-    if (requstStr.empty())
+    if (requestStr.empty())
         return std::string();
-    return GetRequst(requstStr.substr(0, requstStr.size() - 1));
+    return GetRequest(requestStr.substr(0, requestStr.size() - 1));
 }
 
-std::vector<std::tuple<std::string, std::string>> BaiDuEngine::ToRequst(const std::string& reqStr)
+std::vector<std::tuple<std::string, std::string>> BaiDuEngine::ToRequest(const std::string& reqStr)
 {
-    std::string response = RequstAPI::Requst_GET(reqStr);
+    std::string response = RequestAPI::Request_GET(reqStr);
     return GetResult(response);
 }
 

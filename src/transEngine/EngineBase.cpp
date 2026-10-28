@@ -1,8 +1,8 @@
 #include "EngineBase.h"
 
-std::string EngineBase::GetRequstURL() const
+std::string EngineBase::GetRequestURL() const
 {
-    return m_requstURL;
+    return m_requestURL;
 }
 
 void EngineBase::SetFromLanguage(const std::string& language)

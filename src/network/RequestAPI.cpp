@@ -1,6 +1,6 @@
-#include "RequstAPI.h"
+#include "RequestAPI.h"
 #include "requests.h"
-std::string RequstAPI::Requst_GET(const std::string& url)
+std::string RequestAPI::Request_GET(const std::string& url)
 {
     requests::Request req(new HttpRequest);
     req->method  = HTTP_GET;
@@ -16,7 +16,7 @@ std::string RequstAPI::Requst_GET(const std::string& url)
     return response;
 }
 
-std::string RequstAPI::Requst_POST(const std::string& url, const std::string& body, const std::vector<std::tuple<std::string, std::string>>& headers)
+std::string RequestAPI::Request_POST(const std::string& url, const std::string& body, const std::vector<std::tuple<std::string, std::string>>& headers, int timeoutMs)
 {
     http_headers httpHeader;
     for (auto& header : headers)
@@ -29,7 +29,7 @@ std::string RequstAPI::Requst_POST(const std::string& url, const std::string& bo
     req->url     = url;
     req->body    = body;
     req->headers = httpHeader;
-    req->timeout = 5000;
+    req->timeout = timeoutMs;
     requests::Response resp;
     resp = requests::request(req);
     if (resp == NULL || resp->status_code != HTTP_STATUS_OK)

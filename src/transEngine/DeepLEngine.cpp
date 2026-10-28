@@ -1,7 +1,7 @@
 #include "DeepLEngine.h"
 #include "File.h"
 #include "json.hpp"
-#include "RequstAPI.h"
+#include "RequestAPI.h"
 #include "ThreadPool.h"
 #include "RateLimiter.h"
 
@@ -12,7 +12,7 @@ DeepLEngine::DeepLEngine()
 
 std::string DeepLEngine::TranslateText(const std::string& text)
 {
-    std::vector<std::tuple<std::string, std::string>> transResults = ToRequst(GetRequst(text));
+    std::vector<std::tuple<std::string, std::string>> transResults = ToRequest(GetRequest(text));
     if (transResults.empty())
         return std::string();
 
@@ -25,7 +25,7 @@ std::vector<std::string> DeepLEngine::TranslateBatch(const std::vector<std::stri
 {
     std::vector<std::string> result(texts.size());
 
-    // ËÙÂÊÏŞÖÆÆ÷ - Ã¿Ãëm_qpsMax¸öÇëÇó
+    // é€Ÿç‡é™åˆ¶å™¨ - æ¯ç§’m_qpsMaxä¸ªè¯·æ±‚
     RateLimiter limiter(m_qpsMax);
     ThreadPool pool(4);
     std::mutex resultMutex;
@@ -36,9 +36,9 @@ std::vector<std::string> DeepLEngine::TranslateBatch(const std::vector<std::stri
     for (auto& req : reqTexts)
     {
         auto func = [&]() {
-            limiter.wait(); // µÈ´ı»ñÈ¡ÇëÇóĞí¿É
+            limiter.wait(); // ç­‰å¾…è·å–è¯·æ±‚è®¸å¯
 
-            std::vector<std::tuple<std::string, std::string>> res = ToRequst(GetRequst(req.lines));
+            std::vector<std::tuple<std::string, std::string>> res = ToRequest(GetRequest(req.lines));
             if (res.empty()) return;
 
             std::lock_guard<std::mutex> lock(resultMutex);
@@ -59,15 +59,21 @@ std::vector<std::string> DeepLEngine::TranslateBatch(const std::vector<std::stri
 
 void DeepLEngine::LoadDataFile()
 {
-    std::string config       = File::ReadFile("config.txt");
+    std::string config       = File::ReadJsonConfig("config.txt");
     nlohmann::json json_obj  = nlohmann::json::parse(config);
     nlohmann::json deepl_obj = json_obj["engine"]["DeepL"];
 
     m_from = json_obj["from"];
     m_to   = json_obj["to"];
 
-    m_requstURL = deepl_obj["requstURL"];
-    m_apiKey    = deepl_obj["apiKey"];
+    if (deepl_obj.find("requestURL") != deepl_obj.end())
+        m_requestURL = deepl_obj["requestURL"];
+    else
+    {
+        // Compatibility with older config files.
+        m_requestURL = deepl_obj["requstURL"];
+    }
+    m_apiKey = deepl_obj["apiKey"];
 
     std::string qps = deepl_obj["qps"];
     if (qps.empty())
@@ -120,7 +126,7 @@ std::vector<TextBlock> DeepLEngine::GetTextGroup(const std::vector<std::string>&
     return result;
 }
 
-std::string DeepLEngine::GetRequst(const std::string& str)
+std::string DeepLEngine::GetRequest(const std::string& str)
 {
     nlohmann::json json_obj;
     json_obj["source_lang"] = m_from;
@@ -129,7 +135,7 @@ std::string DeepLEngine::GetRequst(const std::string& str)
     return json_obj.dump();
 }
 
-std::string DeepLEngine::GetRequst(const std::vector<std::string>& texts)
+std::string DeepLEngine::GetRequest(const std::vector<std::string>& texts)
 {
     nlohmann::json json_obj;
     json_obj["source_lang"] = m_from;
@@ -141,9 +147,9 @@ std::string DeepLEngine::GetRequst(const std::vector<std::string>& texts)
     return json_obj.dump();
 }
 
-std::vector<std::tuple<std::string, std::string>> DeepLEngine::ToRequst(const std::string& reqStr)
+std::vector<std::tuple<std::string, std::string>> DeepLEngine::ToRequest(const std::string& reqStr)
 {
-    std::string response = RequstAPI::Requst_POST(m_requstURL, reqStr, GetPostHeader());
+    std::string response = RequestAPI::Request_POST(m_requestURL, reqStr, GetPostHeader());
     return GetResult(response);
 }
 

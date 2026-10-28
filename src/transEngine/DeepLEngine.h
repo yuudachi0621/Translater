@@ -7,31 +7,31 @@ public:
     DeepLEngine(const DeepLEngine& reader)            = delete;
     DeepLEngine& operator=(const DeepLEngine& reader) = delete;
 
-    // ·­ÒëÎÄ±¾
+    // ç¿»è¯‘æ–‡æœ¬
     std::string TranslateText(const std::string& text);
 
-    // ÅúÁ¿·­Òë
+    // æ‰¹é‡ç¿»è¯‘
     std::vector<std::string> TranslateBatch(const std::vector<std::string>& texts);
 
 protected:
-    // ¶ÁÈ¡ÅäÖÃÎÄ¼ş
+    // è¯»å–é…ç½®æ–‡ä»¶
     void LoadDataFile();
 
-    // ÎÄ±¾·Ö×é
+    // æ–‡æœ¬åˆ†ç»„
     std::vector<TextBlock> GetTextGroup(const std::vector<std::string>& text);
 
-    // Éú³ÉÇëÇó
-    std::string GetRequst(const std::string& str);
-    std::string GetRequst(const std::vector<std::string>& text);
+    // ç”Ÿæˆè¯·æ±‚
+    std::string GetRequest(const std::string& str);
+    std::string GetRequest(const std::vector<std::string>& text);
 
-    // ·¢ËÍÇëÇó
-    std::vector<std::tuple<std::string, std::string>> ToRequst(const std::string&);
+    // å‘é€è¯·æ±‚
+    std::vector<std::tuple<std::string, std::string>> ToRequest(const std::string&);
 
-    // ´¦Àí½á¹û
+    // å¤„ç†ç»“æœ
     std::vector<std::tuple<std::string, std::string>> GetResult(const std::string& jsonStr);
 
 private:
-    // »ñÈ¡ÇëÇóÍ·
+    // è·å–è¯·æ±‚å¤´
     std::vector<std::tuple<std::string, std::string>> GetPostHeader();
 
 private:

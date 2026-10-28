@@ -3,9 +3,12 @@
 class File
 {
 public:
-    // 读取文件
+    // 璇诲彇鏂囦欢
     static std::string ReadFile(const std::string& filename);
 
-    // 写入文件
+    // Read a JSON configuration file and remove // and /* */ comments.
+    static std::string ReadJsonConfig(const std::string& filename);
+
+    // 鍐欏叆鏂囦欢
     static void WriteFile(const std::string& filename, const std::string& fileBin);
 };

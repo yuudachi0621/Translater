@@ -25,9 +25,10 @@
     <ClCompile Include="src\file\File.cpp" />
     <ClCompile Include="src\limiter\RateLimiter.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\network\RequstAPI.cpp" />
+    <ClCompile Include="src\network\RequestAPI.cpp" />
     <ClCompile Include="src\transEngine\BaiDuEngine.cpp" />
     <ClCompile Include="src\transEngine\DeepLEngine.cpp" />
+    <ClCompile Include="src\transEngine\OllamaEngine.cpp" />
     <ClCompile Include="src\transEngine\EngineBase.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -37,10 +38,11 @@
     <ClInclude Include="src\file\File.h" />
     <ClInclude Include="src\json\json.hpp" />
     <ClInclude Include="src\limiter\RateLimiter.h" />
-    <ClInclude Include="src\network\RequstAPI.h" />
+    <ClInclude Include="src\network\RequestAPI.h" />
     <ClInclude Include="src\thread\ThreadPool.h" />
     <ClInclude Include="src\transEngine\BaiDuEngine.h" />
     <ClInclude Include="src\transEngine\DeepLEngine.h" />
+    <ClInclude Include="src\transEngine\OllamaEngine.h" />
     <ClInclude Include="src\transEngine\EngineBase.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

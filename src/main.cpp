@@ -4,13 +4,14 @@
 
 #include "BaiDuEngine.h"
 #include "DeepLEngine.h"
+#include "OllamaEngine.h"
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 using namespace std;
 
-// data set     Êı¾İ¼¯
+// data set     æ•°æ®é›†
 std::string transText1;
 std::string transText2;
 std::string transText3;
@@ -22,12 +23,12 @@ auto resetFunc = [&]() {
 
     transText1 = "The beauty of life lies in the journey, not the destination. ";
     transText2 = "The greatest glory in living lies not in never falling, but in rising every time we fall.";
-    transText3 = u8"Æ»¹û";
-    transText4 = u8"Ğ¡Ã×";
-    transTextVec.push_back(u8"ÏãÀ±¼¦ÍÈ±¤");
-    transTextVec.push_back(u8"ÉúÒ¬ÄÃÌú");
-    transTextVec.push_back(u8"°¢ÂêÌØÀ­Ë¹");
-    transTextVec.push_back(u8"ÎÒ²»ÖªµÀ½«È¥ºÎ·½£¬µ«ÎÒÒÑÔÚÂ·ÉÏ¡£");
+    transText3 = u8"è‹¹æœ";
+    transText4 = u8"å°ç±³";
+    transTextVec.push_back(u8"é¦™è¾£é¸¡è…¿å ¡");
+    transTextVec.push_back(u8"ç”Ÿæ¤°æ‹¿é“");
+    transTextVec.push_back(u8"é˜¿ç›ç‰¹æ‹‰æ–¯");
+    transTextVec.push_back(u8"æˆ‘ä¸çŸ¥é“å°†å»ä½•æ–¹ï¼Œä½†æˆ‘å·²åœ¨è·¯ä¸Šã€‚");
 };
 
 auto printFunc = [](const string& src, const string& dst) {
@@ -85,13 +86,40 @@ void testDeepLFunc()
     cout << endl;
 }
 
-int main()
+void testOllamaFunc()
+{
+    resetFunc();
+    cout << "Ollama Engine:" << endl;
+
+    std::shared_ptr<EngineBase> ptr(new OllamaEngine());
+    ptr->SetFromLanguage("en");
+    ptr->SetToLanguage("zh");
+    printFunc(transText1, ptr->TranslateText(transText1));
+    printFunc(transText2, ptr->TranslateText(transText2));
+
+    ptr->SetFromLanguage("zh");
+    ptr->SetToLanguage("en");
+    printFunc(transText3, ptr->TranslateText(transText3));
+    printFunc(transText4, ptr->TranslateText(transText4));
+
+    cout << endl;
+    printVecFunc(transTextVec, ptr->TranslateBatch(transTextVec));
+    cout << endl;
+}
+
+int main(int argc, char* argv[])
 {
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
 #endif
 
-    testBaiDuFunc();
+    if (argc > 1 && std::string(argv[1]) == "ollama")
+    {
+        testOllamaFunc();
+        return 0;
+    }
 
+    testBaiDuFunc();
     testDeepLFunc();
+    testOllamaFunc();
 }

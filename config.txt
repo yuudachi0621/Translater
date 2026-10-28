@@ -3,18 +3,30 @@
     "to": "en",
     "engine": {
         "BaiDu": {
-            "requstURL": "https://fanyi-api.baidu.com/api/trans/vip/translate",
+            "requestURL": "https://fanyi-api.baidu.com/api/trans/vip/translate",
             "apiKey": "",
             "appId": "",
             "qps": "1",
             "length": "2000"
         },
         "DeepL": {
-            "requstURL": "https://api-free.deepl.com/v2/translate",
+            "requestURL": "https://api-free.deepl.com/v2/translate",
             "apiKey": "",
             "qps": "1",
             "length": "2000",
             "quota": "50"
+        },
+        "Ollama": {
+            "requestURL": "http://127.0.0.1:11434/api/generate",
+            "model": "",
+            "qps": "1",
+            "length": "2000",
+            "quota": "20",
+            "timeout": "120000",
+            "temperature": 0.1,
+            "numPredict": "512",
+            "numCtx": "4096",
+            "think": false
         }
     }
 }

@@ -1,0 +1,79 @@
+{
+    // 默认源语言。代码中调用 SetFromLanguage() 后，会覆盖此值。
+    "from": "zh",
+
+    // 默认目标语言。代码中调用 SetToLanguage() 后，会覆盖此值。
+    "to": "en",
+
+    "engine": {
+        "BaiDu": {
+            // 百度翻译 API 地址。
+            "requestURL": "https://fanyi-api.baidu.com/api/trans/vip/translate",
+
+            // 百度翻译控制台中的 API Key。
+            "apiKey": "",
+
+            // 百度翻译控制台中的应用 AppID。
+            "appId": "",
+
+            // 每秒最多请求次数，必须大于 0。
+            "qps": "1",
+
+            // 单次批量请求累计文本长度上限，单位为字节。
+            "length": "2000"
+        },
+
+        "DeepL": {
+            // DeepL 翻译 API 地址。免费版和付费版地址可能不同。
+            "requestURL": "https://api-free.deepl.com/v2/translate",
+
+            // DeepL API Key。免费版通常以 :fx 结尾。
+            "apiKey": "",
+
+            // 每秒最多请求次数，必须大于 0。
+            "qps": "1",
+
+            // 单次批量请求累计文本长度上限，单位为字节。
+            "length": "2000",
+
+            // 单次批量请求最多包含的文本条数。
+            "quota": "50"
+        },
+
+        "Ollama": {
+            // Ollama Generate API 地址。使用远程 Ollama 时改成对应主机地址。
+            "requestURL": "http://127.0.0.1:11434/api/generate",
+
+            // 模型名称，必须与 ollama list 中的 NAME 完全一致。
+            // 也可以填写通过 ollama create 创建的自定义模型。
+            "model": "custom-translator:latest",
+
+            // 每秒最多请求次数。本地小模型建议保持 1，避免并发占用过多显存。
+            "qps": "1",
+
+            // 单次批量请求累计文本长度上限，单位为字节。
+            "length": "2000",
+
+            // 单次批量请求最多包含的文本条数。
+            "quota": "20",
+
+            // HTTP 请求超时时间，单位为毫秒。
+            // 首次加载大模型时建议不低于 120000。
+            "timeout": "120000",
+
+            // 生成温度。翻译任务建议使用 0.0 到 0.3，数值越低结果越稳定。
+            "temperature": 0.1,
+
+            // 单次最多生成的 token 数。文本较长或批量翻译时应适当增大。
+            "numPredict": "512",
+
+            // 模型上下文窗口大小，单位为 token。
+            // 不能超过模型自身支持的上限。
+            "numCtx": "4096",
+
+            // 是否启用模型思考输出。
+            // 翻译任务建议设为 false，避免只返回推理内容。
+            "think": false
+        }
+    }
+}

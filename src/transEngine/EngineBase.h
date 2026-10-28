@@ -4,14 +4,14 @@
 
 struct TextBlock
 {
-    int start_idx;                  // block¶ÔÓ¦textsÀïµÄÆğÊ¼ĞòºÅ
-    std::vector<std::string> lines; // ÕâÒ»ÅúblockÄÚµÄÔ­×Ö·û´®
+    int start_idx;                  // blockå¯¹åº”textsé‡Œçš„èµ·å§‹åºå·
+    std::vector<std::string> lines; // è¿™ä¸€æ‰¹blockå†…çš„åŸå­—ç¬¦ä¸²
 };
 
 class EngineBase
 {
 public:
-    EngineBase(){};
+    EngineBase() {};
     EngineBase(const EngineBase& reader)            = delete;
     EngineBase& operator=(const EngineBase& reader) = delete;
 
@@ -19,36 +19,36 @@ public:
 
     void SetToLanguage(const std::string& language);
 
-    // ·­ÒëÎÄ±¾
+    // ç¿»è¯‘æ–‡æœ¬
     virtual std::string TranslateText(const std::string& text) = 0;
 
-    // ÅúÁ¿·­Òë
+    // æ‰¹é‡ç¿»è¯‘
     virtual std::vector<std::string> TranslateBatch(const std::vector<std::string>& texts) = 0;
 
 protected:
-    // ¶ÁÈ¡ÅäÖÃÎÄ¼ş
+    // è¯»å–é…ç½®æ–‡ä»¶
     virtual void LoadDataFile() = 0;
 
-    // ÎÄ±¾·Ö×é
+    // æ–‡æœ¬åˆ†ç»„
     virtual std::vector<TextBlock> GetTextGroup(const std::vector<std::string>& text) = 0;
 
-    // Éú³ÉÇëÇó
-    virtual std::string GetRequst(const std::string&)              = 0;
-    virtual std::string GetRequst(const std::vector<std::string>&) = 0;
+    // ç”Ÿæˆè¯·æ±‚
+    virtual std::string GetRequest(const std::string&)              = 0;
+    virtual std::string GetRequest(const std::vector<std::string>&) = 0;
 
-    // ·¢ËÍÇëÇó
-    virtual std::vector<std::tuple<std::string, std::string>> ToRequst(const std::string&) = 0;
+    // å‘é€è¯·æ±‚
+    virtual std::vector<std::tuple<std::string, std::string>> ToRequest(const std::string&) = 0;
 
-    // ´¦Àí½á¹û
+    // å¤„ç†ç»“æœ
     virtual std::vector<std::tuple<std::string, std::string>> GetResult(const std::string&) = 0;
 
-    std::string GetRequstURL() const;
+    std::string GetRequestURL() const;
 
 protected:
-    std::string m_from;      // Ô´ÓïÑÔ
-    std::string m_to;        // Ä¿µÄÓïÑÔ
-    std::string m_requstURL; // ÇëÇóÁ´½Ó
-    std::string m_apiKey;    // key
-    int m_qpsMax;            // Ã¿Ãë×î´óÇëÇóÊı
-    int m_lengthMax;         // µ¥´ÎÇëÇó×î´ó³¤¶È
+    std::string m_from;       // æºè¯­è¨€
+    std::string m_to;         // ç›®çš„è¯­è¨€
+    std::string m_requestURL; // è¯·æ±‚é“¾æ¥
+    std::string m_apiKey;     // key
+    int m_qpsMax;             // æ¯ç§’æœ€å¤§è¯·æ±‚æ•°
+    int m_lengthMax;          // å•æ¬¡è¯·æ±‚æœ€å¤§é•¿åº¦
 };
