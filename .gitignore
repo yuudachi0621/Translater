@@ -1,3 +1,4 @@
 .vs/
 libhv*.log
 x64/
+Translater.vcxproj.user
