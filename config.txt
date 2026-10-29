@@ -27,6 +27,18 @@
             "numPredict": "512",
             "numCtx": "4096",
             "think": false
+        },
+        "OpenAICompatible": {
+            "requestURL": "https://api.deepseek.com/chat/completions",
+            "apiKey": "",
+            "model": "deepseek-chat",
+            "qps": "1",
+            "length": "2000",
+            "quota": "20",
+            "timeout": "120000",
+            "temperature": 0.1,
+            "maxTokens": "1024",
+            "reasoningEffort": ""
         }
     }
 }

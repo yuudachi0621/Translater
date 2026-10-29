@@ -74,6 +74,42 @@
             // 是否启用模型思考输出。
             // 翻译任务建议设为 false，避免只返回推理内容。
             "think": false
+        },
+
+        "OpenAICompatible": {
+            // OpenAI Chat Completions 兼容接口的完整地址。
+            // DeepSeek 示例：https://api.deepseek.com/chat/completions
+            // OpenAI 示例：https://api.openai.com/v1/chat/completions
+            "requestURL": "https://api.deepseek.com/chat/completions",
+
+            // API 密钥。部分本地服务不需要密钥，可以留空。
+            "apiKey": "",
+
+            // 模型 ID。必须与服务商提供的模型名称完全一致。
+            // DeepSeek 示例：deepseek-chat；OpenAI 示例：gpt-4.1-mini。
+            "model": "deepseek-chat",
+
+            // 每秒最多请求次数，必须大于 0。
+            "qps": "1",
+
+            // 单次批量请求累计文本长度上限，单位为字节。
+            "length": "2000",
+
+            // 单次批量请求最多包含的文本条数。
+            "quota": "20",
+
+            // HTTP 请求超时时间，单位为毫秒。
+            "timeout": "120000",
+
+            // 生成温度。翻译任务建议使用 0.0 到 0.3。
+            "temperature": 0.1,
+
+            // 单次最多生成的 token 数。
+            "maxTokens": "1024",
+
+            // 可选：推理强度，例如 "none"、"low"、"medium"、"high"。
+            // 不需要或不支持时留空。
+            "reasoningEffort": ""
         }
     }
 }

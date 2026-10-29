@@ -84,6 +84,9 @@
     <ClCompile Include="src\transEngine\OllamaEngine.cpp">
       <Filter>源文件\transEngine</Filter>
     </ClCompile>
+    <ClCompile Include="src\transEngine\OpenAICompatibleEngine.cpp">
+      <Filter>源文件\transEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\transEngine\EngineBase.h">
@@ -120,6 +123,9 @@
       <Filter>头文件\transEngine</Filter>
     </ClInclude>
     <ClInclude Include="src\transEngine\OllamaEngine.h">
+      <Filter>头文件\transEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\transEngine\OpenAICompatibleEngine.h">
       <Filter>头文件\transEngine</Filter>
     </ClInclude>
   </ItemGroup>

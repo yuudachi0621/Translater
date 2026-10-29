@@ -5,6 +5,7 @@
 #include "BaiDuEngine.h"
 #include "DeepLEngine.h"
 #include "OllamaEngine.h"
+#include "OpenAICompatibleEngine.h"
 
 #ifdef _WIN32
 #include <windows.h>
@@ -23,12 +24,12 @@ auto resetFunc = [&]() {
 
     transText1 = "The beauty of life lies in the journey, not the destination. ";
     transText2 = "The greatest glory in living lies not in never falling, but in rising every time we fall.";
-    transText3 = u8"苹果";
-    transText4 = u8"小米";
-    transTextVec.push_back(u8"香辣鸡腿堡");
-    transTextVec.push_back(u8"生椰拿铁");
-    transTextVec.push_back(u8"阿玛特拉斯");
-    transTextVec.push_back(u8"我不知道将去何方，但我已在路上。");
+    transText3 = "苹果";
+    transText4 = "小米";
+    transTextVec.push_back("香辣鸡腿堡");
+    transTextVec.push_back("生椰拿铁");
+    transTextVec.push_back("阿玛特拉斯");
+    transTextVec.push_back("我不知道将去何方，但我已在路上。");
 };
 
 auto printFunc = [](const string& src, const string& dst) {
@@ -107,6 +108,26 @@ void testOllamaFunc()
     cout << endl;
 }
 
+void testOpenAICompatibleFunc()
+{
+    resetFunc();
+    cout << "OpenAI Compatible Engine:" << endl;
+
+    std::shared_ptr<EngineBase> ptr(new OpenAICompatibleEngine());
+    ptr->SetFromLanguage("en");
+    ptr->SetToLanguage("zh");
+    printFunc(transText1, ptr->TranslateText(transText1));
+    printFunc(transText2, ptr->TranslateText(transText2));
+
+    ptr->SetFromLanguage("zh");
+    ptr->SetToLanguage("en");
+    printFunc(transText3, ptr->TranslateText(transText3));
+    printFunc(transText4, ptr->TranslateText(transText4));
+
+    cout << endl;
+    printVecFunc(transTextVec, ptr->TranslateBatch(transTextVec));
+    cout << endl;
+}
 int main(int argc, char* argv[])
 {
 #ifdef _WIN32
@@ -116,6 +137,12 @@ int main(int argc, char* argv[])
     if (argc > 1 && std::string(argv[1]) == "ollama")
     {
         testOllamaFunc();
+        return 0;
+    }
+
+    if (argc > 1 && (std::string(argv[1]) == "openai" || std::string(argv[1]) == "custom"))
+    {
+        testOpenAICompatibleFunc();
         return 0;
     }
 
