@@ -1,4 +1,6 @@
 #include "File.h"
+
+#include <cstdio>
 #include <fstream>
 
 std::string File::ReadFile(const std::string& filename)
@@ -7,12 +9,30 @@ std::string File::ReadFile(const std::string& filename)
     fp       = fopen(filename.data(), "rb");
     if (!fp) return std::string();
 
-    fseek(fp, 0, SEEK_END);
-    size_t fileSize = ftell(fp);
-    rewind(fp);
-    std::string fileBin;
-    fileBin.resize(fileSize);
-    fread((char*)fileBin.data(), 1, fileSize, fp);
+    if (fseek(fp, 0, SEEK_END) != 0)
+    {
+        fclose(fp);
+        return std::string();
+    }
+
+    const long fileSize = ftell(fp);
+    if (fileSize < 0 || fseek(fp, 0, SEEK_SET) != 0)
+    {
+        fclose(fp);
+        return std::string();
+    }
+
+    std::string fileBin(static_cast<std::size_t>(fileSize), '\0');
+    if (!fileBin.empty())
+    {
+        const std::size_t readSize = fread((char*)fileBin.data(), 1, fileBin.size(), fp);
+        if (readSize != fileBin.size())
+        {
+            fclose(fp);
+            return std::string();
+        }
+    }
+
     fclose(fp);
     return fileBin;
 }

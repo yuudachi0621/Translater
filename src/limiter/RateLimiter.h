@@ -5,7 +5,7 @@ class RateLimiter
 {
 public:
     RateLimiter(int qps)
-        : m_qps(qps), m_lastTime(std::chrono::steady_clock::now()) {}
+        : m_qps(qps > 0 ? qps : 1), m_lastTime(std::chrono::steady_clock::now()) {}
 
     void wait();
 

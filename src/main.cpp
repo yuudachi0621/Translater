@@ -33,22 +33,21 @@ auto resetFunc = [&]() {
 };
 
 auto printFunc = [](const string& src, const string& dst) {
-    cout << "src: " << src << "\tdst: " << dst << endl;
+    cout << "src: " << src << "\ndst: " << dst << endl;
     std::this_thread::sleep_for(std::chrono::seconds(1));
 };
 auto printVecFunc = [](const std::vector<std::string>& src, const std::vector<std::string>& dst) {
-    cout << "src: "
-         << "\tdst: " << endl;
     for (int i = 0; i < dst.size(); i++)
     {
-        cout << src[i] << "\t" << dst[i] << endl;
+        cout << "src: " << src[i] << "\n"
+             << "dst: " << dst[i] << endl;
     }
 };
 
 void testBaiDuFunc()
 {
     resetFunc();
-    cout << "BaiDu Engine:" << endl;
+    cout << "*BaiDu Engine:" << endl;
 
     std::shared_ptr<EngineBase> ptr(new BaiDuEngine());
     ptr->SetFromLanguage("en");
@@ -69,7 +68,7 @@ void testBaiDuFunc()
 void testDeepLFunc()
 {
     resetFunc();
-    cout << "DeepL Engine:" << endl;
+    cout << "*DeepL Engine:" << endl;
 
     std::shared_ptr<EngineBase> ptr(new DeepLEngine());
     ptr->SetFromLanguage("en");
@@ -90,7 +89,7 @@ void testDeepLFunc()
 void testOllamaFunc()
 {
     resetFunc();
-    cout << "Ollama Engine:" << endl;
+    cout << "*Ollama Engine:" << endl;
 
     std::shared_ptr<EngineBase> ptr(new OllamaEngine());
     ptr->SetFromLanguage("en");

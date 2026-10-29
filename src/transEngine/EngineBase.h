@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <tuple>
 #include <vector>
 
 struct TextBlock
@@ -12,6 +13,7 @@ class EngineBase
 {
 public:
     EngineBase() {};
+    virtual ~EngineBase() = default;
     EngineBase(const EngineBase& reader)            = delete;
     EngineBase& operator=(const EngineBase& reader) = delete;
 
@@ -43,6 +45,9 @@ protected:
     virtual std::vector<std::tuple<std::string, std::string>> GetResult(const std::string&) = 0;
 
     std::string GetRequestURL() const;
+
+    // Parse a positive integer from configuration, or return defaultValue.
+    static int ParsePositiveInt(const std::string& value, int defaultValue);
 
 protected:
     std::string m_from;       // 源语言

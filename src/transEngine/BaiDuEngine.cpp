@@ -52,9 +52,13 @@ std::vector<std::string> BaiDuEngine::TranslateBatch(const std::vector<std::stri
             if (res.empty()) return;
 
             std::lock_guard<std::mutex> lock(resultMutex);
-            for (int index = 0; index < res.size(); index++)
+            // Some providers may return extra rows for multiline input.
+            const std::size_t copyCount = res.size() < req.lines.size() ? res.size() : req.lines.size();
+            for (std::size_t index = 0; index < copyCount; ++index)
             {
-                result[req.start_idx + index] = std::get<1>(res[index]);
+                const std::size_t resultIndex = static_cast<std::size_t>(req.start_idx) + index;
+                if (resultIndex < result.size())
+                    result[resultIndex] = std::get<1>(res[index]);
             }
         };
         futures.push_back(pool.enqueue(func));
@@ -86,17 +90,8 @@ void BaiDuEngine::LoadDataFile()
     m_apiKey = baidu_obj["apiKey"];
     m_appId  = baidu_obj["appId"];
 
-    std::string qps = baidu_obj["qps"];
-    if (qps.empty())
-        m_qpsMax = 1;
-    else
-        m_qpsMax = std::atoi(qps.data());
-
-    std::string length = baidu_obj["length"];
-    if (length.empty())
-        m_lengthMax = 100;
-    else
-        m_lengthMax = std::atoi(length.data());
+    m_qpsMax    = ParsePositiveInt(baidu_obj["qps"], 1);
+    m_lengthMax = ParsePositiveInt(baidu_obj["length"], 100);
 }
 
 std::vector<TextBlock> BaiDuEngine::GetTextGroup(const std::vector<std::string>& fileText)
